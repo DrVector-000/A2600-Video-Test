@@ -1,1 +1,1 @@
-# A2600-Video-Test
+# Atari 2600 - Video Test v.1.0
