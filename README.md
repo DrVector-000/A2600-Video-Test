@@ -20,6 +20,13 @@
 
 <br />
 
+<div align="center">
+  <a>
+    <img src="Images/AT28C EEPROM Programmer.jpg" alt="AT28C EEPROM Programmer" width="450" height="320">
+    <img src="Images/Homebrew Cartridge.jpg" alt="Homebrew Cartridge" width="350" height="320">
+  </a>
+</div>
+
 [contributors-shield]: https://img.shields.io/github/contributors/DrVector-000/A2600-Video-Test.svg?style=for-the-badge
 [contributors-url]: https://github.com/DrVector-000/A2600-Video-Test/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/DrVector-000/A2600-Video-Test.svg?style=for-the-badge
