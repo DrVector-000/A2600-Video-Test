@@ -22,6 +22,16 @@
 
 <div align="center">
   <a>
+    <img src="Images/VideoTest Page 0.png" alt="Page 0" width="240" height="180">
+    <img src="Images/VideoTest Page 1.png" alt="Page 1" width="240" height="180">
+    <img src="Images/VideoTest Page 2.png" alt="Page 2" width="240" height="180">
+  </a>
+</div>
+
+<br />
+
+<div align="center">
+  <a>
     <img src="Images/AT28C EEPROM Programmer.jpg" alt="AT28C EEPROM Programmer" width="450" height="320">
     <img src="Images/Homebrew Cartridge.jpg" alt="Homebrew Cartridge" width="350" height="320">
   </a>
