@@ -1,5 +1,5 @@
 ;************************************************************************
-;* Video Test v. 1.02
+;* Video Test v. 1.03
 ;* Banco 1
 ;************************************************************************
 
@@ -47,6 +47,8 @@ MainLoop
 	BEQ Page4
 	CPY #$05
 	BEQ Page5
+	CPY #$06
+	BEQ Page6
 	JMP Continue
 Page0
 	JSR TitleScreen
@@ -58,12 +60,15 @@ Page2
 	JSR GrayScale
 	JMP Continue	
 Page3
-	JSR RedScale
+	JSR Grid
 	JMP Continue	
 Page4
-	JSR GreenScale
+	JSR RedScale
 	JMP Continue	
 Page5
+	JSR GreenScale
+	JMP Continue	
+Page6
 	JSR BlueScale
 	JMP Continue	
 Continue
@@ -81,6 +86,7 @@ Continue
 	include "RedScale.asm"
 	include "GreenScale.asm"
 	include "BlueScale.asm"
+	include "Grid.asm"
 
 ;************************************************************************
 ;* Include Data
@@ -103,7 +109,7 @@ CheckSWCHB SUBROUTINE
 	BNE	.checksel
 	INC _pageNr
 	LDA _pageNr
-	CMP	#$06
+	CMP	#$07
 	BCC	.continue
 	LDA	#$00
 .continue
@@ -119,7 +125,7 @@ CheckSWCHB SUBROUTINE
 	BNE	.exit
 	DEC _pageNr
 	BPL .exit
-	LDA #$05
+	LDA #$06
 	STA _pageNr
 
 .exit
