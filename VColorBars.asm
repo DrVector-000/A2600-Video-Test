@@ -4,11 +4,13 @@ VColorBars SUBROUTINE
 	JSR FrameStart
 	
 	;---------------------------------------------------
-	; Verical Blank 37 linee
+    ; Vertical Blank
+	; NTSC 37 Scan lines
+	; PAL SECAM 45 Scan lines
 	LDA	#$01
     STA	VBLANK          ; Start VBLANK
 	
-	LDA #$2B
+	LDA #T64VBlank
     STA TIM64T
 .waitvb	
 	LDA INTIM
@@ -18,13 +20,21 @@ VColorBars SUBROUTINE
     STA	VBLANK          ; Stop VBLANK
 
 	;---------------------------------------------------
-    ; PAL TV 242 Scanlines
+    ; Kernal
+	; NTSC 192 Scan lines
+	; PAL SECAM 228 Scan lines
 .area1
     LDY #$00
 .area1loop
     STA WSYNC           ; (3) attendi Horizontal Blank
 	INY					; (2)
-	CPY	#$B4            ; (2) numero di linee (180)
+	IF SYSTEM == NTSC
+		; 150 WSYNC
+		CPY #$97
+	ELSE
+		; 170 WSYNC
+		CPY #$AA		; (2)
+	ENDIF
 	BEQ	.area2			; (2)
 	
     NOP					; (2)
@@ -33,35 +43,35 @@ VColorBars SUBROUTINE
     NOP					; (2)
     NOP					; (2)
 .lightgray
-	LDA	#$0E			; (2) (63/68)
+	LDA	#LightGray		; (2) (63/68)
 	STA	COLUBK			; (3)
     NOP					; (2)
 .yellow
-	LDA	#$2F			; (2) (21/160)
+	LDA	#Yellow			; (2) (21/160)
 	STA	COLUBK			; (3)
     NOP					; (2)
 .cyan	
-	LDA	#$7F			; (2) (42/160)
+	LDA	#Cyan			; (2) (42/160)
 	STA	COLUBK			; (3)
     NOP					; (2)
 .green
-	LDA	#$5B			; (2) (63/160)
+	LDA	#Green			; (2) (63/160)
 	STA	COLUBK			; (3)
     NOP					; (2)
 .violet
-	LDA	#$86			; (2) (84/160)
+	LDA	#Violet			; (2) (84/160)
 	STA	COLUBK			; (3)
     NOP					; (2)
 .red	
-	LDA	#$65			; (2) (105/160)
+	LDA	#Red			; (2) (105/160)
 	STA	COLUBK			; (3)
     NOP					; (2)
 .blue	
-	LDA	#$D4			; (2) (126/160)
+	LDA	#Blue			; (2) (126/160)
 	STA	COLUBK			; (3)
     NOP					; (2)
 .black
-	LDA	#$00			; (2) (147/160)
+	LDA	#Black			; (2) (147/160)
 	STA	COLUBK			; (3)
 	JMP	.area1loop		; (3)
 
@@ -70,7 +80,13 @@ VColorBars SUBROUTINE
 .area2loop
     STA WSYNC           ; attendi Horizontal Blank
 	INY
-	CPY	#$0A            ; numero di linee (10)
+	IF SYSTEM == NTSC
+		; 8 WSYNC
+		CPY #$08
+	ELSE
+		; 10 WSYNC
+		CPY #$0A
+	ENDIF
 	BEQ	.area3
 	
     NOP
@@ -79,35 +95,35 @@ VColorBars SUBROUTINE
     NOP
     NOP
 .blue2	
-	LDA	#$D4
+	LDA	#Blue
 	STA	COLUBK
     NOP
 .black2
-	LDA	#$00
+	LDA	#Black
 	STA	COLUBK
     NOP
 .violet2
-	LDA	#$86
+	LDA	#Violet
 	STA	COLUBK
     NOP
 .black3
-	LDA	#$00
+	LDA	#Black
 	STA	COLUBK
     NOP
 .cyan2	
-	LDA	#$7F
+	LDA	#Cyan
 	STA	COLUBK
     NOP
 .black4
-	LDA	#$00
+	LDA	#Black
 	STA	COLUBK
     NOP
 .lightgray2
-	LDA	#$0E
+	LDA	#LightGray
 	STA	COLUBK
     NOP
 .black5
-	LDA	#$00
+	LDA	#Black
 	STA	COLUBK
     JMP .area2loop
 
@@ -116,7 +132,13 @@ VColorBars SUBROUTINE
 .area3loop
     STA WSYNC           ; attendi Horizontal Blank
 	INY
-	CPY	#$35            ; numero di linee (52) (53???)
+	IF SYSTEM == NTSC
+		; 34 WSYNC
+		CPY #$22
+	ELSE
+		; 48 WSYNC
+		CPY #$30
+	ENDIF
 	BEQ	.exit
 	
     NOP
@@ -125,33 +147,36 @@ VColorBars SUBROUTINE
     NOP
     NOP
 .darkblue	
-	LDA	#$B0
+	LDA	#DarkBlue
 	STA	COLUBK
 	NOP
     NOP
     NOP
 .white	
-	LDA	#$0F
+	LDA	#White
 	STA	COLUBK
 	NOP
 	NOP
     NOP
 .darkviolet
-	LDA	#$A0
+	LDA	#DarkViolet
 	STA	COLUBK
 	NOP
 	NOP
     NOP
 .black6
-	LDA	#$00
+	LDA	#Black
 	STA	COLUBK
 	JMP	.area3loop
 
 .exit
+	STA WSYNC
+
 	;---------------------------------------------------
     ; Overscan
-	; 30 WSYNC
-	LDA #$24
+	; NTSC 30 Scan lines
+	; PAL SECAM 36 Scan lines
+	LDA #T64OverS
     STA TIM64T
 .waitovs	
 	LDA INTIM

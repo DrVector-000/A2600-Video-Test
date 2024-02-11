@@ -4,11 +4,13 @@ GreenScale SUBROUTINE
 	JSR FrameStart
 	
 	;---------------------------------------------------
-	; Verical Blank 37 linee
+    ; Vertical Blank
+	; NTSC 37 Scan lines
+	; PAL SECAM 45 Scan lines
 	LDA	#$01
     STA	VBLANK          ; Start VBLANK
 	
-	LDA #$2B
+	LDA #T64VBlank
     STA TIM64T
 .waitvb	
 	LDA INTIM
@@ -17,7 +19,17 @@ GreenScale SUBROUTINE
 	LDA	#$00
     STA	VBLANK          ; Stop VBLANK
 
-    LDY #$F2            ; numero di linee
+	;---------------------------------------------------
+    ; Kernal
+	; NTSC 192 Scan lines
+	; PAL SECAM 228 Scan lines
+	IF SYSTEM == NTSC
+		; 192 Linee
+		LDY #$C1
+	ELSE
+		; 228 Linee
+		LDY #$E4
+	ENDIF
 
 .colorindex
     LDA _frameCounter
@@ -31,8 +43,6 @@ GreenScale SUBROUTINE
     LDA #$00
     STA _colorIndex
 
-	;---------------------------------------------------
-    ; PAL TV 242 Scanlines
 .fillscreen
 .printline
     STA WSYNC           ; line 1
@@ -44,7 +54,7 @@ GreenScale SUBROUTINE
     NOP                 ; [2]
 
     LDX _colorIndex     ; [2]
-    LDA GreenScalePAL,X ; [4]
+    LDA GreenScaleCols,X ; [4]
     STA COLUBK          ; [2]
 
     DEY
@@ -58,8 +68,9 @@ GreenScale SUBROUTINE
 
 	;---------------------------------------------------
     ; Overscan
-	; 30 WSYNC
-	LDA #$24
+	; NTSC 30 Scan lines
+	; PAL SECAM 36 Scan lines
+	LDA #T64OverS
     STA TIM64T
 .waitovs	
 	LDA INTIM

@@ -4,11 +4,13 @@ TitleScreen SUBROUTINE
 	JSR FrameStart
 	
 	;---------------------------------------------------
-	; Verical Blank 37 linee
+    ; Vertical Blank
+	; NTSC 37 Scan lines
+	; PAL SECAM 45 Scan lines
 	LDA	#$01
     STA	VBLANK          ; Start VBLANK
 	
-	LDA #$2B
+	LDA #T64VBlank
     STA TIM64T
 .waitvb	
 	LDA INTIM
@@ -18,14 +20,21 @@ TitleScreen SUBROUTINE
     STA	VBLANK          ; Stop VBLANK
 
 	;---------------------------------------------------
-    ; PAL TV 242 Scanlines
-	; 20 WSYNC
-	LDA #$14
+    ; Kernal
+	; NTSC 192 Scan lines
+	; PAL SECAM 228 Scan lines
+	IF SYSTEM == NTSC
+		; 10 WSYNC
+		LDA #$0A
+	ELSE
+		; 20 WSYNC
+		LDA #$14
+	ENDIF
 	STA _nSync
 	JSR WaitSync
     
 	; Riga gialla
-    LDA	#$2F
+	LDA #Yellow
     STA	COLUBK
 
     STA WSYNC
@@ -37,14 +46,15 @@ TitleScreen SUBROUTINE
 	STA WSYNC
 
 	; Scrive titolo
+	; 11 WSYNC
 	JSR PrintTitle
-
+	
 	; 2 WSYNC
 	STA WSYNC
 	STA WSYNC
 
 	; Riga gialla
-    LDA	#$2F
+	LDA #Yellow
     STA	COLUBK
 
 	; 2 WSYNC
@@ -53,18 +63,25 @@ TitleScreen SUBROUTINE
     STA	COLUBK
 	STA WSYNC
 
-	; 163 WSYNC
-	LDA #$A3
+	IF SYSTEM == NTSC
+		; 123 WSYNC
+		LDA #$7B
+	ELSE
+		; 149 WSYNC
+		LDA #$95
+	ENDIF
 	STA _nSync
 	JSR WaitSync
 
 	; disegna "tubo rotante" :)
+	; 41 WSYNC
 	JSR DrawPipe
 
 	;---------------------------------------------------
     ; Overscan
-	; 30 WSYNC
-	LDA #$24
+	; NTSC 30 Scan lines
+	; PAL SECAM 36 Scan lines
+	LDA #T64OverS
     STA TIM64T
 .waitovs	
 	LDA INTIM
@@ -88,7 +105,7 @@ DrawPipe SUBROUTINE
 	LDY _indexFirstColor
 	STY _tempIndex
 .drawcolor
-	LDA GrayScalePAL,Y
+	LDA GrayScaleCols,Y
 	STA _color
 
 	JSR DrawColorLine
@@ -131,7 +148,7 @@ NextColor SUBROUTINE
 
 .exit
 	LDY _tempIndex
-	LDA GrayScalePAL,Y
+	LDA GrayScaleCols,Y
 	STA _color
 	RTS
 
@@ -153,8 +170,8 @@ DrawColorLine SUBROUTINE
 ;****************************************************************************
 PrintTitle SUBROUTINE
 	; Colore giallo
-    LDA	#$2F		; (2)
-    STA	COLUPF		; (3)
+    LDA #Yellow
+    STA	COLUPF
 	
 	LDX #$00
 	LDY #$00
@@ -193,6 +210,8 @@ loop
 	STA PF0
 	STA PF1
 	STA PF2
+	STA WSYNC
+	STA WSYNC
 
 	RTS
 

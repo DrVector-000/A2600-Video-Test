@@ -4,11 +4,13 @@ GrayScale SUBROUTINE
 	JSR FrameStart
 	
 	;---------------------------------------------------
-	; Verical Blank 37 linee
+    ; Vertical Blank
+	; NTSC 37 Scan lines
+	; PAL SECAM 45 Scan lines
 	LDA	#$01
     STA	VBLANK          ; Start VBLANK
 	
-	LDA #$2B
+	LDA #T64VBlank
     STA TIM64T
 .waitvb	
 	LDA INTIM
@@ -18,13 +20,21 @@ GrayScale SUBROUTINE
     STA	VBLANK          ; Stop VBLANK
 
 	;---------------------------------------------------
-    ; PAL TV 242 Scanlines
+    ; Kernal
+	; NTSC 192 Scan lines
+	; PAL SECAM 228 Scan lines
 .topbars
     LDY #$00
 .topbarsloop
     STA WSYNC           ; (3) attendi Horizontal Blank
 	INY					; (2)
-	CPY	#$79            ; (2) numero di linee (121)
+	IF SYSTEM == NTSC
+		; 96 WSYNC
+		CPY	#$61
+	ELSE
+		; 114 WSYNC
+		CPY	#$72
+	ENDIF
 	BEQ	.bottombars	    ; (2)
 	
     NOP					; (2)
@@ -71,7 +81,13 @@ GrayScale SUBROUTINE
 .bottombarsloop
     STA WSYNC           ; (3) attendi Horizontal Blank
 	INY					; (2)
-	CPY	#$7A            ; (2) numero di linee (121) (122 ???)
+	IF SYSTEM == NTSC
+		; 96 WSYNC
+		CPY	#$60
+	ELSE
+		; 114 WSYNC
+		CPY	#$72
+	ENDIF
 	BEQ	.exit	        ; (2)
 	
     NOP					; (2)
@@ -114,13 +130,15 @@ GrayScale SUBROUTINE
     JMP .bottombarsloop
 
 .exit
-	LDA	#$00
+	LDA	#Black
 	STA	COLUBK
+	STA WSYNC
 
 	;---------------------------------------------------
     ; Overscan
-	; 30 WSYNC
-	LDA #$24
+	; NTSC 30 Scan lines
+	; PAL SECAM 36 Scan lines
+	LDA #T64OverS
     STA TIM64T
 .waitovs	
 	LDA INTIM

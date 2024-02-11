@@ -9,7 +9,13 @@ Grid SUBROUTINE
 	LDA	#$01
     STA	VBLANK          ; Start VBLANK
 	
-	LDA #$24
+	IF SYSTEM == NTSC
+		; 22 Linee
+		LDA #$1A
+	ELSE
+		; 31 Linee
+		LDA #$24
+	ENDIF
     STA TIM64T
 .waitvb	
 	LDA INTIM
@@ -19,7 +25,7 @@ Grid SUBROUTINE
     STA	VBLANK          ; Stop VBLANK
 
 	; Colore righe orizzontali
-	LDA	#$FE
+	LDA	#White
 	STA	COLUPF
 	
 	; Colore righe verticali
@@ -88,7 +94,11 @@ Grid SUBROUTINE
 	STA	PF1
 	STA	PF2
 	INY
-	CPY	#$FF
+	IF SYSTEM == NTSC
+		CPY	#$D6
+	ELSE
+		CPY	#$FF
+	ENDIF
 	BNE	.drawv
 
 	;---------------------------------------------------
