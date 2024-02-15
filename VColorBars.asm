@@ -29,8 +29,8 @@ VColorBars SUBROUTINE
     STA WSYNC           ; (3) attendi Horizontal Blank
 	INY					; (2)
 	IF SYSTEM == NTSC
-		; 150 WSYNC
-		CPY #$97
+		; 140 WSYNC
+		CPY #$8C
 	ELSE
 		; 170 WSYNC
 		CPY #$AA		; (2)
@@ -71,7 +71,7 @@ VColorBars SUBROUTINE
 	STA	COLUBK			; (3)
     NOP					; (2)
 .black
-	LDA	#Black			; (2) (147/160)
+	LDA	#DarkGray		; (2) (147/160)
 	STA	COLUBK			; (3)
 	JMP	.area1loop		; (3)
 
@@ -99,7 +99,7 @@ VColorBars SUBROUTINE
 	STA	COLUBK
     NOP
 .black2
-	LDA	#Black
+	LDA	#DarkGray
 	STA	COLUBK
     NOP
 .violet2
@@ -107,7 +107,7 @@ VColorBars SUBROUTINE
 	STA	COLUBK
     NOP
 .black3
-	LDA	#Black
+	LDA	#DarkGray
 	STA	COLUBK
     NOP
 .cyan2	
@@ -115,7 +115,7 @@ VColorBars SUBROUTINE
 	STA	COLUBK
     NOP
 .black4
-	LDA	#Black
+	LDA	#DarkGray
 	STA	COLUBK
     NOP
 .lightgray2
@@ -123,18 +123,29 @@ VColorBars SUBROUTINE
 	STA	COLUBK
     NOP
 .black5
-	LDA	#Black
+	LDA	#DarkGray
 	STA	COLUBK
     JMP .area2loop
 
 .area3
+	; Barre nero/sfondo/grigio
+	LDA	#Black
+	STA	COLUP0
+	LDA #Gray
+	STA COLUP1
+	; Impostazione sprites
+	LDA	#$00
+	STA	NUSIZ0
+	STA	NUSIZ1
+
     LDY #$00
 .area3loop
     STA WSYNC           ; attendi Horizontal Blank
 	INY
+
 	IF SYSTEM == NTSC
-		; 34 WSYNC
-		CPY #$22
+		; 44 WSYNC
+		CPY #$2D
 	ELSE
 		; 48 WSYNC
 		CPY #$30
@@ -155,22 +166,39 @@ VColorBars SUBROUTINE
 .white	
 	LDA	#White
 	STA	COLUBK
-	NOP
-	NOP
-    NOP
+
+	; Carica grafica player 0
+	LDA	#$3C	; (2)
+	STA	GRP0	; (3)
 .darkviolet
 	LDA	#DarkViolet
 	STA	COLUBK
-	NOP
-	NOP
-    NOP
-.black6
-	LDA	#Black
+
+	; Carica grafica player 1
+	LDA	#$3C	; (2)
+	STA GRP1	; (3)
+
+.darkgray1
+	LDA	#DarkGray
 	STA	COLUBK
+
+	STA	RESP0
+	STA RESP1
+
+	
 	JMP	.area3loop
 
 .exit
+	LDA	#$00
+	STA	GRP0
+	STA GRP1
+	STA	RESP0
+	STA RESP1
+
 	STA WSYNC
+
+	LDA	#Black
+	STA	COLUBK
 
 	;---------------------------------------------------
     ; Overscan

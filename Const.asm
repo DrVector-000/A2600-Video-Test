@@ -56,6 +56,8 @@ T64OverS    = OverSSL * 76 / 64
     IF SYSTEM == NTSC
 Yellow      = $1C
 LightGray   = $0C
+DarkGray    = $02
+Gray        = $04
 Cyan        = $AE
 Green       = $C8
 Violet      = $56
@@ -69,6 +71,8 @@ DarkViolet  = $60
         IF SYSTEM == PAL
 Yellow      = $2E
 LightGray   = $0E
+DarkGray    = $02
+Gray        = $04
 Cyan        = $7F
 Green       = $5A
 Violet      = $86
@@ -82,6 +86,8 @@ DarkViolet  = $A0
             IF SYSTEM == SECAM
 Yellow      = $0C
 LightGray   = $0E
+DarkGray    = $00
+Gray        = $00
 Cyan        = $0A
 Green       = $08
 Violet      = $06
